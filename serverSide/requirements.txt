@@ -1,0 +1,3 @@
+pymysql==0.9.3
+mysql-to-sqlite3
+torf-cli

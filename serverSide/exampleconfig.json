@@ -1,0 +1,12 @@
+{
+    "host": "localhost",
+    "port": 3306,
+    "user": "root",
+    "passwd": "xxxxxxxxxxxxxxx",
+    "database": "online_shop",
+    "trackers": [
+        "udp://tracker.torrent.eu.org:451/announce",
+        "udp://thetracker.org:80/announce",
+        "http://tracker.tfile.co:80/announce"
+    ]
+}

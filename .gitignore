@@ -1,3 +1,23 @@
+.vscode/
+
+# removed since it contains passwords
+serverSide/config.json
+
+# directory where torrents and seeds go
+local-exported/
+
+# public gpg keys
+*.asc
+
+# site images
+serverSide/images/
+
+# added item keys
+siterip/*.csv
+
+# xml of pages to add
+siterip/*.xml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
