@@ -1,6 +1,10 @@
+import serverRequests
 import subprocess
 import threading
+import urllib
 import queue
+import torf
+import json
 import sys
 import os
 
@@ -33,7 +37,6 @@ class TorrentClient(threading.Thread):
         os.chdir(self.cwd)
         self.proc.kill()
 
-
 class TorrentClientReportBuffer:
     def __init__(self):
         self.flush()
@@ -57,7 +60,17 @@ class TorrentClientReportBuffer:
 
     def flush(self):
         self.buffer_contents = []
-            
+
+def magnet_to_torrent(magnet, outpath):
+    params = dict(
+        urllib.parse.parse_qs(urllib.parse.urlsplit(magnet).query)
+    )
+    torrentobj = torf.Magnet(
+        **{k: v[0] if len(v) == 1 else v for k, v in params.items()}
+    ).torrent()
+    torrentobj.metainfo["info"]["piece length"] = 16384
+    print(torrentobj.write(outpath))
+
 if __name__ == "__main__":
     #simple test program
     class Main:
@@ -90,5 +103,4 @@ if __name__ == "__main__":
         main.main()
     except KeyboardInterrupt:
         tc.stop_event.set()
-    
 
