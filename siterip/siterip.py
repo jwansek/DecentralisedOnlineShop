@@ -105,12 +105,12 @@ class Browser:
 
         if id_ == category or impaths == [] or title is None:
             print("Trying again on ", id_)
-            print(json.dumps(objout, indent = 4))
+            # print(json.dumps(objout, indent = 4))
             return self.rip_page(url, calls=calls+1, title=title, category=category, impaths=impaths)
         else:
             append_to_completed(id_)
             print("Successfully got data on ", id_)
-            print(json.dumps(objout, indent = 4))
+            # print(json.dumps(objout, indent = 4))
             return objout
 
     def __exit__(self, type, value, traceback):
@@ -124,7 +124,7 @@ def get_product_urls():
     tree = etree.parse("sitemap-products.xml")
     root = tree.getroot()
 
-    for child in list(root):
+    for child in reversed(list(root)):
         out.append(child[0].text)
     return out
 

@@ -29,7 +29,7 @@ class TorrentClient(threading.Thread):
                     lastreportbuffer.flush()
             else:
                 lastreportbuffer.append(line)
-        # print("Event stopped")
+        print("Seeding stopped...")
         os.chdir(self.cwd)
         self.proc.kill()
 

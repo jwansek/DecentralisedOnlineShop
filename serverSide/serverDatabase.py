@@ -71,7 +71,17 @@ class ServerDatabase:
     def get_product(self, id_):
         with self.__connection.cursor() as cursor:
             cursor.execute("SELECT * FROM products WHERE prod_id = %s", (id_, ))
-            return cursor.fetchall()
+            itemdata = cursor.fetchone()
+            cursor.execute("SELECT related_id FROM related_products WHERE prod_id = %s AND related_id IN (SELECT prod_id FROM products);", (id_, ))
+            related = [i["related_id"] for i in cursor.fetchall()]
+            cursor.execute("SELECT impath FROM images WHERE prod_id = %s;", (id_, ))
+            images = [i["impath"] for i in cursor.fetchall()]
+            return {
+                "itemdata": itemdata,
+                "related": related,
+                "images": images
+            }
+
 
     def add_release(self, name, path, magnet, torrent):
         with self.__connection.cursor() as cursor:
@@ -100,11 +110,11 @@ class ServerDatabase:
                 mysql_host = CONFIG["host"],
                 mysql_port = CONFIG["port"],
                 sqlite_file = outpath.name,
-                tables = [
+                mysql_tables = (
                     "products",
                     "related_products",
                     "images"
-                ]
+                )
             ).transfer()
 
             subprocess.run([Sz_APP_PATH, "a", os.path.join(out_path, "%s.7z" % timenow), outpath.name, "images/"])
@@ -131,7 +141,7 @@ class ServerTorrentClient:
     def get_queue(self):
         return self.queue
 
-    def main(self):
+    def main(self, verbose=False):
         while True:
             report = None
             try:
@@ -140,7 +150,7 @@ class ServerTorrentClient:
             except queue.Empty:
                 pass
 
-            if report is not None:
+            if report is not None and verbose:
                 print(report)
 
 def seed(release=False):
@@ -157,7 +167,7 @@ def seed(release=False):
     )
     tc.start()
     try:
-        stc.main()
+        stc.main(verbose=True)
     except KeyboardInterrupt:
         tc.stop_event.set()
         del stc

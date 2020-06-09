@@ -1,4 +1,4 @@
-# The Server Site Application
+# The Server Side Application
 
 Notes on installing dependencies:
 `sudo pip3 install -r requirements.txt`
