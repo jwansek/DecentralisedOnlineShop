@@ -61,46 +61,6 @@ class TorrentClientReportBuffer:
     def flush(self):
         self.buffer_contents = []
 
-def magnet_to_torrent(magnet, outpath):
-    params = dict(
-        urllib.parse.parse_qs(urllib.parse.urlsplit(magnet).query)
-    )
-    torrentobj = torf.Magnet(
-        **{k: v[0] if len(v) == 1 else v for k, v in params.items()}
-    ).torrent()
-    torrentobj.metainfo["info"]["piece length"] = 16384
-    print(torrentobj.write(outpath))
-
-if __name__ == "__main__":
-    #simple test program
-    class Main:
-        def __init__(self):
-            self.queue = queue.Queue()
-
-        def get_queue(self):
-            return self.queue
-
-        def main(self):
-            while True:
-                report = None
-                try:
-                    while True:
-                        report = self.queue.get_nowait()
-                except queue.Empty:
-                    pass
-
-                if report is not None:
-                    print(report)
-
-    main = Main()
-    tc = TorrentClient(
-        main.get_queue(), 
-        "../local-exported/items-1591644340.torrent", 
-        "../local-exported/"
-    )
-    tc.start()
-    try:
-        main.main()
-    except KeyboardInterrupt:
-        tc.stop_event.set()
+def get_torrent_name(path):
+    return torf.Torrent.read(path).metainfo["info"]["name"]
 

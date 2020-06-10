@@ -2,6 +2,7 @@
 
 # removed since it contains passwords
 serverSide/config.json
+serverSide/static/*
 
 # directory where torrents and seeds go
 local-exported/

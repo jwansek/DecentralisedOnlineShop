@@ -83,9 +83,9 @@ class ServerDatabase:
             }
 
 
-    def add_release(self, name, path, magnet, torrent):
+    def add_release(self, name, path, torrent):
         with self.__connection.cursor() as cursor:
-            cursor.execute("INSERT INTO releases VALUES (%s, %s, %s, %s);", (name, path, magnet, torrent))
+            cursor.execute("INSERT INTO releases VALUES (%s, %s, %s);", (name, path, torrent))
         self.__connection.commit()
 
     def get_newest_release(self):
@@ -124,14 +124,12 @@ class ServerDatabase:
         torrent = torf.Torrent(path = out_path, trackers=CONFIG["trackers"])
         torrent.generate()
         torrent.write(os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent"))
-        magnet =  str(torrent.magnet())
 
-        self.add_release(torrent.name, str(torrent.path), magnet, torrent.name + ".torrent")
+        self.add_release(torrent.name, str(torrent.path), torrent.name + ".torrent")
 
         return {
             "torrent": torrent,
-            "torrentpath": os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent"),
-            "magnet": magnet
+            "torrentpath": os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent")
         }
 
 class ServerTorrentClient:
