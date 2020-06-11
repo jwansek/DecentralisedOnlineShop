@@ -1,11 +1,13 @@
 import serverRequests
 import torrentClient
+import platform
 import wx
 import wx.adv
 import os
 
-TRAY_TOOLTIP = 'System Tray Demo'
-TRAY_ICON = os.path.join("GUIAssets", "icon", "icon_24.png")
+TRAY_TOOLTIP = 'Online Shop Torrent Client'
+if platform.system() == "Linux":
+    TRAY_ICON = os.path.join("GUIAssets", "icon", "icon_24.png")
 
 def create_menu_item(menu, label, func):
     item = wx.MenuItem(menu, -1, label)
@@ -59,12 +61,8 @@ class My_Application(wx.Frame):
         self.myapp.Destroy()
         self.Destroy()
 
-def start_torrent_dl():
-    lastRelease = serverRequests.get_torrent()
-    torrentClient.magnet_to_torrent(lastRelease["magnet"], lastRelease["torrent"])
 
 if __name__ == "__main__":
-    # MyApp = wx.App()
-    # My_Application()
-    # MyApp.MainLoop()
-    start_torrent_dl()
+    MyApp = wx.App()
+    My_Application()
+    MyApp.MainLoop()
