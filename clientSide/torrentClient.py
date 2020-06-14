@@ -1,9 +1,8 @@
 import serverRequests
-import subprocess
+import libtorrent
 import threading
 import urllib
 import queue
-import torf
 import json
 import sys
 import os
@@ -60,7 +59,4 @@ class TorrentClientReportBuffer:
 
     def flush(self):
         self.buffer_contents = []
-
-def get_torrent_name(path):
-    return torf.Torrent.read(path).metainfo["info"]["name"]
 

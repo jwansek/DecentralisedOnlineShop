@@ -1,11 +1,11 @@
 import mysql_to_sqlite3
 import subprocess
+import libtorrent
 import tempfile
 import pymysql
 import shutil
 import random
 import queue
-import torf
 import time
 import json
 import sys
@@ -16,7 +16,6 @@ with open(os.path.join("..", "serverSide", "config.json"), "r") as f:
 
 sys.path.append(os.path.join("..", "clientSide"))
 import torrentClient
-
 
 Sz_APP_PATH = "7z"
 GPG_APP_PATH = "gpg"
@@ -121,16 +120,31 @@ class ServerDatabase:
 
         subprocess.run([GPG_APP_PATH, "--output", os.path.join(out_path, "%s.sig" % timenow), "--detach-sig", os.path.join(out_path, "%s.7z" % timenow)])
 
-        torrent = torf.Torrent(path = out_path, trackers=CONFIG["trackers"])
-        torrent.generate()
-        torrent.write(os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent"))
+        file_storage = libtorrent.file_storage()
+        libtorrent.add_files(file_storage, out_path)
+        torrent_obj = libtorrent.create_torrent(file_storage)
+        for trackerurl in CONFIG["trackers"]:
+            torrent_obj.add_tracker(trackerurl)
+        torrent_obj.set_comment("online_shop release id %d" % time.time())
+        torrent_obj.set_creator("online_shop using libtorrent %s" % libtorrent.version)
+        libtorrent.set_piece_hashes(torrent_obj, "../local-exported/")
+        torrent = torrent_obj.generate()
+        with open(os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent"), "wb") as f:
+            f.write(libtorrent.bencode(torrent))
 
-        self.add_release(torrent.name, str(torrent.path), torrent.name + ".torrent")
+        
 
-        return {
-            "torrent": torrent,
-            "torrentpath": os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent")
-        }
+
+        # torrent = torf.Torrent(path = out_path, trackers=CONFIG["trackers"])
+        # torrent.generate()
+        # torrent.write(os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent"))
+
+        # self.add_release(torrent.name, str(torrent.path), torrent.name + ".torrent")
+
+        # return {
+        #     "torrent": torrent,
+        #     "torrentpath": os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent")
+        # }
 
 class ServerTorrentClient:
     def __init__(self):
@@ -172,7 +186,7 @@ def seed(release=False):
         print("\nExiting nicely...\n")
     
 
-
-
 if __name__ == "__main__":
-    seed()
+    # seed()
+    with ServerDatabase() as db:
+        db.export_db()

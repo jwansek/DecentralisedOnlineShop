@@ -3,7 +3,6 @@
 Notes on installing dependencies:
 `sudo pip3 install -r requirements.txt`
 
-BitTornado is not in pip but can still be downloaded easily from git:
-
-`git clone https://github.com/effigies/BitTornado`
-`sudo python3 setup.py install`
+This project requires python's bindings for libtorrent.
+Binaries do not exist for this, so check out the building
+instructions for your system.

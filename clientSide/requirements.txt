@@ -1,3 +1,2 @@
 requests==2.20.0
-torf==3.0.1
 wxpython
