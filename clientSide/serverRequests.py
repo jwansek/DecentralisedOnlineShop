@@ -32,7 +32,7 @@ def get_torrent():
 def get_server_pubkey():
     url = urllib.parse.urljoin(CONFIG["site"], "key")
     response = requests.get(url)
-    with open(os.path.join(APP_FOLDER, "server.gpg"), "wb"):
+    with open(os.path.join(APP_FOLDER, "server.gpg"), "wb") as f:
         f.write(response.content)
 
 def get_torrent_name(path):
