@@ -4,6 +4,7 @@ import requests
 import urllib
 import queue
 import json
+import torf
 import os
 
 # TODO: make a proper wrapper
@@ -24,10 +25,14 @@ def get_torrent():
     with open(temp_path, "wb") as f:
         f.write(response.content)
 
-    filename = torrentClient.get_torrent_name(temp_path) + ".torrent"
+    filename = get_torrent_name(temp_path) + ".torrent"
     os.rename(temp_path, os.path.join(os.path.split(temp_path)[0], filename))
     return filename
 
+def get_torrent_name(path):
+    return torf.Torrent.read(path).metainfo["info"]["name"]
+
+#tempororary
 def dl_torrent(torrentfile):
     class Main:
         def __init__(self):
@@ -62,5 +67,6 @@ def dl_torrent(torrentfile):
 
 if __name__ == "__main__":
     torrentfile = get_torrent()
-    dl_torrent(torrentfile)
+    print(torrentfile)
+    # dl_torrent(torrentfile)
             
