@@ -1,6 +1,5 @@
 import mysql_to_sqlite3
 import subprocess
-import libtorrent
 import tempfile
 import pymysql
 import shutil
@@ -13,9 +12,6 @@ import os
 
 with open(os.path.join("..", "serverSide", "config.json"), "r") as f:
     CONFIG = json.load(f)
-
-sys.path.append(os.path.join("..", "clientSide"))
-import torrentClient
 
 Sz_APP_PATH = "7z"
 GPG_APP_PATH = "gpg"
@@ -127,7 +123,7 @@ class ServerDatabase:
             torrent_obj.add_tracker(trackerurl)
         torrent_obj.set_comment("online_shop release id %d" % time.time())
         torrent_obj.set_creator("online_shop using libtorrent %s" % libtorrent.version)
-        libtorrent.set_piece_hashes(torrent_obj, "../local-exported/")
+        libtorrent.set_piece_hashes(torrent_obj, os.path.split(out_path)[0])
         torrent = torrent_obj.generate()
         with open(os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent"), "wb") as f:
             f.write(libtorrent.bencode(torrent))
@@ -139,7 +135,11 @@ class ServerDatabase:
         # torrent.generate()
         # torrent.write(os.path.join(os.path.split(out_path)[0], os.path.split(out_path)[1] + ".torrent"))
 
-        # self.add_release(torrent.name, str(torrent.path), torrent.name + ".torrent")
+        self.add_release(
+            os.path.split(out_path)[-1],
+            out_path,
+            os.path.split(out_path)[-1] + ".torrent"
+        )
 
         # return {
         #     "torrent": torrent,
@@ -187,6 +187,9 @@ def seed(release=False):
     
 
 if __name__ == "__main__":
+    import libtorrent
+    sys.path.append(os.path.join("..", "clientSide"))
+    import torrentClient
     # seed()
     with ServerDatabase() as db:
         db.export_db()

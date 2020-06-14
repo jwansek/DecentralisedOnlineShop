@@ -1,4 +1,5 @@
 import torrentClient
+import platform
 import requests
 import urllib
 import queue
@@ -7,7 +8,10 @@ import os
 
 # TODO: make a proper wrapper
 
-APP_FOLDER = os.path.expanduser(os.path.join("~", ".online_shop"))
+if platform.system() == "Windows":
+    APP_FOLDER = os.path.join(os.getenv("LOCALAPPDATA"), "online_shop")
+else:
+    APP_FOLDER = os.path.expanduser(os.path.join("~", ".online_shop"))
 os.makedirs(APP_FOLDER, exist_ok=True)
 
 with open("config.json", "r") as f:
