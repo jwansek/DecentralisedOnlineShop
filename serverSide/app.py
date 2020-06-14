@@ -1,8 +1,11 @@
 import serverDatabase
+import subprocess
 import threading
+import tempfile
 import shutil
 import flask
 import time
+import json
 import os
 app = flask.Flask(__name__)
 
@@ -15,6 +18,21 @@ def get_torrent():
 @app.route("/key")
 def get_server_pubkey():
     return app.send_static_file("pubkey.asc")
+
+@app.route("/send", methods=["POST"])
+def recieve_order():
+    file = flask.request.files["file"]
+    if file.filename[-9:] == ".json.enc":
+        with tempfile.TemporaryDirectory() as tmpdir:
+            file.save(os.path.join(tmpdir, file.filename))
+            proc = subprocess.Popen(
+                [serverDatabase.GPG_APP_PATH, "--decrypt", os.path.join(tmpdir, file.filename)],
+                stdout = subprocess.PIPE
+            )
+            decrypted = json.loads(proc.stdout.readline().decode())
+
+    print(decrypted)  
+    return "success"
 
 # e.g. `http://localhost:5000/api/product?id=9197747`
 @app.route("/api/product")

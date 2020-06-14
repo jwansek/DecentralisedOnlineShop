@@ -1,3 +1,6 @@
 {
-    "site": "http://192.168.0.41:5000"
+    "site": "http://192.168.0.41:5000",
+    "windows_7z_exec": "7z",
+    "windows_gpg_exec": "gpg",
+    "server_email": "gae19jtu@uea.ac.uk"
 }
