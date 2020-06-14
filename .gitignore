@@ -3,6 +3,7 @@
 # removed since it contains passwords
 serverSide/config.json
 serverSide/static/*
+serverSide/trackers.txt
 
 # directory where torrents and seeds go
 local-exported/

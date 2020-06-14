@@ -1,4 +1,4 @@
-import torrentClient
+# import torrentClient
 import platform
 import requests
 import urllib
@@ -28,6 +28,12 @@ def get_torrent():
     filename = get_torrent_name(temp_path) + ".torrent"
     os.rename(temp_path, os.path.join(os.path.split(temp_path)[0], filename))
     return filename
+
+def get_server_pubkey():
+    url = urllib.parse.urljoin(CONFIG["site"], "key")
+    response = requests.get(url)
+    with open(os.path.join(APP_FOLDER, "server.gpg"), "wb"):
+        f.write(response.content)
 
 def get_torrent_name(path):
     return torf.Torrent.read(path).metainfo["info"]["name"]

@@ -1,4 +1,3 @@
-import serverRequests
 import libtorrent
 import threading
 import urllib
@@ -45,8 +44,8 @@ class TorrentClient(threading.Thread):
             reportBuffer.change_status(dl_obj.status())
             self.q.put(reportBuffer)
             time.sleep(self.after/1000)
-        print("Seeding stopped...")
-
+        del session
+        print("Downloading/Seeding Halted...")
 
 class TorrentClientReportBuffer:
     STATE_STR = ['queued', 'checking', 'downloading metadata', 'downloading', 'finished', 'seeding', 'allocating', 'checking fastresume']

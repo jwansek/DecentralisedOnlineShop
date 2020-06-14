@@ -12,6 +12,10 @@ def get_torrent():
         filename = db.get_newest_release()["torrent"]
     return app.send_static_file(filename)
 
+@app.route("/key")
+def get_server_pubkey():
+    return app.send_static_file("pubkey.asc")
+
 # e.g. `http://localhost:5000/api/product?id=9197747`
 @app.route("/api/product")
 def get_product():

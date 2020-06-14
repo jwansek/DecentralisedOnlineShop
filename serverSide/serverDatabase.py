@@ -148,5 +148,6 @@ class ServerDatabase:
 
 
 if __name__ == "__main__":
+    import libtorrent
     with ServerDatabase() as db:
         db.export_db()
