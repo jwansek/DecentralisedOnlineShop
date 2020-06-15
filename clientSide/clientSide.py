@@ -2,6 +2,7 @@ import serverRequests
 import torrentClient
 import clientDatabase
 import platform
+import random
 import queue
 import wx
 import wx.adv
@@ -24,6 +25,7 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
         self.menu_items = {}
         self.queue = queue.Queue()
 
+        clientDatabase.add_to_keyring()
         self.torrentfile = serverRequests.get_torrent()
         self.torrentclient = torrentClient.TorrentClient(
             self.queue,
@@ -36,6 +38,8 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
 
     def CreatePopupMenu(self):
         self.menu = wx.Menu()
+        self.create_menu_item(self.menu, "Send example request", self.send_example_request, "example")
+        self.menu.AppendSeparator()
         self.create_menu_item(self.menu, 'NameSpace', self.on_hello, "name")
         self.create_menu_item(self.menu, 'SizeSpace', self.doNothing, "space")
         self.create_menu_item(self.menu, 'StatusSpace', self.doNothing, "status")
@@ -79,6 +83,25 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
             self.menu_items["name"].SetItemLabel(report.name)
             self.menu_items["space"].SetItemLabel("%s - %s" % (report.tot_size, report.progress))
             self.menu_items["status"].SetItemLabel("%s↑ %s↓" % (report.upload_rate, report.download_rate))
+
+            if report.state == "seeding" and not os.path.exists(os.path.join(serverRequests.APP_FOLDER, "Database")):
+                self.on_torrent_completed()
+
+    def on_torrent_completed(self):
+        print("Torrent completed")
+        clientDatabase.extract(self.torrentfile)
+
+    def send_example_request(self, _):
+        serverRequests.encrypt_and_send({
+            "user_id": random.randint(0, 10000000),
+            "order": [
+                {9197747: 1},
+                {1000001431104: 3},
+                {1000001430564: 14},
+                {1000002091711: random.randint(1, 9)},
+                {1000001431043: random.randint(1, 9)}
+            ]
+        })
 
     def set_icon(self, path):
         icon = wx.Icon(wx.Bitmap(path))

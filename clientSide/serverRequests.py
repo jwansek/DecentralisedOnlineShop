@@ -127,20 +127,4 @@ def dl_torrent(torrentfile):
     try:
         main.main()
     except KeyboardInterrupt:
-        tc.stop_event.set() 
-
-if __name__ == "__main__":
-    # torrentfile = get_torrent()
-    # print(torrentfile)
-    # dl_torrent(torrentfile)
-
-    # print(get_product(9197747))
-    encrypt_and_send({
-        "user_id": 1,
-        "order": [
-            {9197747: 1},
-            {1000001431104: 3},
-            {1000001430564: 14}
-        ]
-    })
-            
+        tc.stop_event.set()        
