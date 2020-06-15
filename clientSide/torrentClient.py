@@ -37,11 +37,17 @@ class TorrentClient(threading.Thread):
     def run(self):
         session = libtorrent.session()
         session.listen_on(6881, 6891)
-        dl_obj = session.add_torrent({
-            "ti": libtorrent.torrent_info(self.torrentfile),
-            "save_path": self.loc,
-            "seed_mode": self.seeding_mode
-        })
+        if self.seeding_mode:
+            dl_obj = session.add_torrent({
+                "ti": libtorrent.torrent_info(self.torrentfile),
+                "save_path": self.loc,
+                "seed_mode": True
+            })
+        else:
+            dl_obj = session.add_torrent({
+                "ti": libtorrent.torrent_info(self.torrentfile),
+                "save_path": self.loc
+            })
         tot_size = str(dl_obj.status().total_wanted)
         name = dl_obj.name()
         reportBuffer = TorrentClientReportBuffer(tot_size, name)

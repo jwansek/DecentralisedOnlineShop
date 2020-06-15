@@ -26,8 +26,8 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
         self.torrentfile = serverRequests.get_torrent()
         self.torrentclient = torrentClient.TorrentClient(
             self.queue,
-            # self.torrentfile,
-            "/home/edward/Downloads/debian-live-10.4.0-amd64-lxqt.iso.torrent",
+            self.torrentfile,
+            #"/home/edward/Downloads/debian-live-10.4.0-amd64-lxqt.iso.torrent",
             serverRequests.APP_FOLDER
         )
         self.torrentclient.start()
