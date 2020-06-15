@@ -25,13 +25,14 @@ def get_torrent_name(path):
     return libtorrent.torrent_info(torrent_file).name()
 
 class TorrentClient(threading.Thread):
-    def __init__(self, q, torrentfile, loc, after=500):
+    def __init__(self, q, torrentfile, loc, after=500, seeding_mode=False):
         threading.Thread.__init__(self)
         self.q = q
         self.torrentfile = torrentfile
         self.loc = loc
         self.after = after
         self.stop_event = threading.Event()
+        self.seeding_mode = seeding_mode
 
     def run(self):
         session = libtorrent.session()
@@ -39,7 +40,7 @@ class TorrentClient(threading.Thread):
         dl_obj = session.add_torrent({
             "ti": libtorrent.torrent_info(self.torrentfile),
             "save_path": self.loc,
-            "seed_mode": True
+            "seed_mode": self.seeding_mode
         })
         tot_size = str(dl_obj.status().total_wanted)
         name = dl_obj.name()

@@ -35,7 +35,8 @@ def seed(release=False):
     tc = torrentClient.TorrentClient(
         stc.get_queue(),
         os.path.join(os.path.split(torrentinfo["path"])[0], torrentinfo["torrent"]),
-        os.path.split(torrentinfo["path"])[0]
+        os.path.split(torrentinfo["path"])[0],
+        seeding_mode=True
     )
     tc.start()
     try:
