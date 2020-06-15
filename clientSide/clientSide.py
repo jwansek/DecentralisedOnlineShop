@@ -1,5 +1,6 @@
 import serverRequests
 import torrentClient
+import clientDatabase
 import platform
 import queue
 import wx
@@ -31,10 +32,6 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
             serverRequests.APP_FOLDER
         )
         self.torrentclient.start()
-        print(self.torrentfile)
-        print(serverRequests.APP_FOLDER)
-        
-
         wx.CallLater(200, self.afterFunc)
 
     def CreatePopupMenu(self):
