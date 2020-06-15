@@ -1,4 +1,4 @@
-# import torrentClient
+import torrentClient
 import subprocess
 import platform
 import requests
@@ -6,7 +6,6 @@ import tempfile
 import urllib
 import queue
 import json
-import torf
 import os
 
 # TODO: make a proper wrapper
@@ -39,7 +38,7 @@ def get_torrent():
 
     filename = get_torrent_name(temp_path) + ".torrent"
     os.rename(temp_path, os.path.join(os.path.split(temp_path)[0], filename))
-    return filename
+    return os.path.join(APP_FOLDER, filename)
 
 def get_server_pubkey():
     """Gets the server's public GPG key for validation and encrypting.
@@ -59,7 +58,7 @@ def get_torrent_name(path):
     Returns:
         str: The correct name of the torrent file, as in the metadata
     """
-    return torf.Torrent.read(path).metainfo["info"]["name"]
+    return torrentClient.get_torrent_name(path)
 
 def encrypt_and_send(obj):
     """Encrypts a JSON-serialisable object and sends it so the server.

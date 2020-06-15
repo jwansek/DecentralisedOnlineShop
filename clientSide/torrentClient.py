@@ -20,6 +20,10 @@ def size_to_str(size:int):
     else:
         return ('{} bytes').format(size)
 
+def get_torrent_name(path):
+    torrent_file = libtorrent.bdecode(open(path, "rb").read())
+    return libtorrent.torrent_info(torrent_file).name()
+
 class TorrentClient(threading.Thread):
     def __init__(self, q, torrentfile, loc, after=500):
         threading.Thread.__init__(self)
@@ -70,5 +74,3 @@ class TorrentClientReportBuffer:
             self.num_peers,
             self.state
         )
-
-
