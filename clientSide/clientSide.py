@@ -81,7 +81,7 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
             pass
 
         if report is not None:
-            print(report)
+            # print(report)
             self.menu_items["name"].SetItemLabel(report.name)
             self.menu_items["space"].SetItemLabel("%s - %s" % (report.tot_size, report.progress))
             self.menu_items["status"].SetItemLabel("%s↑ %s↓" % (report.upload_rate, report.download_rate))
