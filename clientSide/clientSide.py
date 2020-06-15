@@ -22,6 +22,7 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
         self.Bind(wx.adv.EVT_TASKBAR_LEFT_DOWN, self.on_left_down)
 
         self.menu = None
+        self.completed = os.path.exists(os.path.join(serverRequests.APP_FOLDER, "Database"))
         self.menu_items = {}
         self.queue = queue.Queue()
 
@@ -39,6 +40,7 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
     def CreatePopupMenu(self):
         self.menu = wx.Menu()
         self.create_menu_item(self.menu, "Send example request", self.send_example_request, "example")
+        self.create_menu_item(self.menu, "Get local database", self.print_database, "example2")
         self.menu.AppendSeparator()
         self.create_menu_item(self.menu, 'NameSpace', self.on_hello, "name")
         self.create_menu_item(self.menu, 'SizeSpace', self.doNothing, "space")
@@ -87,9 +89,17 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
             if report.state == "seeding" and not os.path.exists(os.path.join(serverRequests.APP_FOLDER, "Database")):
                 self.on_torrent_completed()
 
+    def print_database(self, _):
+        if self.completed:
+            with clientDatabase.ClientDatabase() as db:
+                print(db.get_products())
+        else:
+            print("The torrent has not yet completed")
+
     def on_torrent_completed(self):
         print("Torrent completed")
         clientDatabase.extract(self.torrentfile)
+        self.completed = True
 
     def send_example_request(self, _):
         serverRequests.encrypt_and_send({

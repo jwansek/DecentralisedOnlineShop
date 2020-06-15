@@ -75,7 +75,7 @@ def encrypt_and_send(obj):
             json.dump(obj, f)
         with tempfile.NamedTemporaryFile(suffix=".json.enc") as encrypted_file:
             subprocess.run([
-                GPG, "--encrypt", "--yes", "-o", encrypted_file.name, 
+                GPG, "--encrypt", "--yes", "--always-trust", "-o", encrypted_file.name, 
                 "-r", CONFIG["server_email"], plaintext_file.name
             ])
             
