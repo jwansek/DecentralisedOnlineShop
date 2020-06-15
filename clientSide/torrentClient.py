@@ -55,8 +55,6 @@ class TorrentClientReportBuffer:
 
     def change_status(self, status):
         self.progress = "%.2f%%" % (status.progress * 100)
-        # self.download_rate = status.download_rate
-        # self.upload_rate = status.upload_rate
         self.download_rate = "%s/s" % (size_to_str(status.download_rate))
         self.upload_rate = "%s/s" % (size_to_str(status.upload_rate))
         self.num_peers = status.num_peers

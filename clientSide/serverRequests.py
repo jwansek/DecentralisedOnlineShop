@@ -136,4 +136,12 @@ if __name__ == "__main__":
     # dl_torrent(torrentfile)
 
     # print(get_product(9197747))
+    encrypt_and_send({
+        "user_id": 1,
+        "order": [
+            {9197747: 1},
+            {1000001431104: 3},
+            {1000001430564: 14}
+        ]
+    })
             

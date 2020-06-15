@@ -31,4 +31,23 @@ CREATE TABLE IF NOT EXISTS releases (
     torrent VARCHAR(24) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(30) NOT NULL,
+    card_no CHAR(19) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    order_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL REFERENCES users (user_id),
+    datetime DATETIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+    order_id INT UNSIGNED NOT NULL REFERENCES orders (order_id),
+    prod_id INT UNSIGNED NOT NULL REFERENCES products (product_id),
+    quantity INT UNSIGNED NOT NULL,
+    PRIMARY KEY (order_id, prod_id)
+);
+
 
